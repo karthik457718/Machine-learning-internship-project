@@ -1,8 +1,11 @@
 import streamlit as st
 import pickle
 import string
+from nltk.stem import PorterStemmer
 from pathlib import Path
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+
+ps = PorterStemmer()
 
 st.set_page_config(page_title="Spam Scanner", page_icon="🛡️", layout="wide")
 
