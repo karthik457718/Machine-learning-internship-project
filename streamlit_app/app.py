@@ -2,7 +2,6 @@ import streamlit as st
 import pickle
 import string
 from pathlib import Path
-from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 st.set_page_config(page_title="Spam Scanner", page_icon="🛡️", layout="wide")
@@ -476,12 +475,20 @@ BG_SVG = (
 st.markdown(BG_SVG, unsafe_allow_html=True)
 
 # ── Load model ──────────────────────────────────────────
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-model = pickle.load(open(BASE_DIR / "models" / "spam_model.pkl", "rb"))
+try:
+    model_path = BASE_DIR / "models" / "spam_model.pkl"
+    vectorizer_path = BASE_DIR / "models" / "vectorizer.pkl"
 
-vectorizer = pickle.load(open(BASE_DIR / "models" / "vectorizer.pkl", "rb"))
-ps = PorterStemmer()
+    st.write("Model path:", model_path)
+    st.write("Vectorizer path:", vectorizer_path)
+
+    model = pickle.load(open(model_path, "rb"))
+    vectorizer = pickle.load(open(vectorizer_path, "rb"))
+
+except Exception as e:
+    st.error(f"Startup Error: {e}")
+    raise
 
 
 def transform_text(text):
