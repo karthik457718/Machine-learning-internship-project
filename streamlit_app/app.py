@@ -5,18 +5,15 @@ from pathlib import Path
 from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
-st.set_page_config(
-    page_title="Spam Scanner",
-    page_icon="🛡️",
-    layout="wide"
-)
+st.set_page_config(page_title="Spam Scanner", page_icon="🛡️", layout="wide")
 
 st.markdown(
     '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
-st.markdown("""<style>
+st.markdown(
+    """<style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -431,7 +428,9 @@ html, body, [class*="css"] {
     .col-right { position: sticky; top: 32px; }
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 BG_SVG = (
     '<div class="bg-canvas" aria-hidden="true">'
@@ -442,57 +441,55 @@ BG_SVG = (
     '<g class="float-el" style="--dur:9s;--delay:0s;--op:0.18;--ty:-20px;--rot0:-4deg;--rot1:4deg;left:5%;top:30%;">'
     '<path d="M24 4 L44 12 L44 28 C44 38 34 44 24 48 C14 44 4 38 4 28 L4 12 Z" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/>'
     '<path d="M16 26 L22 32 L32 20" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
-    '</g>'
+    "</g>"
     '<g class="float-el" style="--dur:11s;--delay:-3s;--op:0.14;--ty:-14px;--rot0:3deg;--rot1:-5deg;right:6%;top:15%;">'
     '<path d="M24 4 L44 12 L44 28 C44 38 34 44 24 48 C14 44 4 38 4 28 L4 12 Z" fill="rgba(167,139,250,0.15)" stroke="#a78bfa" stroke-width="1.5" stroke-linejoin="round"/>'
-    '</g>'
+    "</g>"
     '<g class="float-el" style="--dur:10s;--delay:-1.5s;--op:0.16;--ty:-18px;--rot0:2deg;--rot1:-3deg;right:12%;top:40%;">'
     '<rect x="2" y="6" width="44" height="32" rx="4" fill="none" stroke="#6d28d9" stroke-width="2"/>'
     '<path d="M2 10 L24 24 L46 10" fill="none" stroke="#6d28d9" stroke-width="2" stroke-linecap="round"/>'
-    '</g>'
+    "</g>"
     '<g class="float-el" style="--dur:8s;--delay:-4s;--op:0.12;--ty:-12px;--rot0:-2deg;--rot1:4deg;left:80%;top:70%;">'
     '<rect x="2" y="6" width="44" height="32" rx="4" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1.5"/>'
     '<path d="M2 10 L24 24 L46 10" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>'
-    '</g>'
+    "</g>"
     '<g class="float-el" style="--dur:13s;--delay:-2s;--op:0.15;--ty:-16px;--rot0:1deg;--rot1:-4deg;left:70%;top:22%;">'
     '<rect x="8" y="22" width="32" height="24" rx="4" fill="none" stroke="#7c3aed" stroke-width="2"/>'
     '<path d="M16 22 L16 16 A8 8 0 0 1 32 16 L32 22" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>'
     '<circle cx="24" cy="33" r="3" fill="#7c3aed" opacity="0.6"/>'
-    '</g>'
+    "</g>"
     '<g class="float-el" style="--dur:7s;--delay:-0.5s;--op:0.13;--ty:-22px;--rot0:-3deg;--rot1:3deg;left:18%;top:72%;">'
     '<circle cx="24" cy="24" r="20" fill="none" stroke="#10b981" stroke-width="2"/>'
     '<path d="M14 24 L21 31 L34 17" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
-    '</g>'
+    "</g>"
     '<g class="float-el" style="--dur:9.5s;--delay:-3.5s;--op:0.11;--ty:-10px;--rot0:2deg;--rot1:-2deg;left:42%;top:8%;">'
     '<path d="M24 4 L44 40 L4 40 Z" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>'
     '<line x1="24" y1="18" x2="24" y2="28" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>'
     '<circle cx="24" cy="34" r="2" fill="#f59e0b"/>'
-    '</g>'
+    "</g>"
     '<circle class="float-el" style="--dur:6s;--delay:-1s;--op:0.20;--ty:-8px;--rot0:0deg;--rot1:0deg;left:30%;top:55%;" cx="6" cy="6" r="5" fill="#a78bfa"/>'
     '<circle class="float-el" style="--dur:7.5s;--delay:-2.5s;--op:0.15;--ty:-12px;--rot0:0deg;--rot1:0deg;left:60%;top:82%;" cx="6" cy="6" r="4" fill="#6ee7b7"/>'
     '<circle class="float-el" style="--dur:8.5s;--delay:-4.5s;--op:0.12;--ty:-10px;--rot0:0deg;--rot1:0deg;left:88%;top:30%;" cx="6" cy="6" r="6" fill="#fca5a5"/>'
-    '</svg>'
-    '</div>'
+    "</svg>"
+    "</div>"
 )
 st.markdown(BG_SVG, unsafe_allow_html=True)
 
 # ── Load model ──────────────────────────────────────────
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-model = pickle.load(
-    open(BASE_DIR / "models" / "spam_model.pkl", "rb")
-)
+model = pickle.load(open(BASE_DIR / "models" / "spam_model.pkl", "rb"))
 
-vectorizer = pickle.load(
-    open(BASE_DIR / "models" / "vectorizer.pkl", "rb")
-)
-ps         = PorterStemmer()
+vectorizer = pickle.load(open(BASE_DIR / "models" / "vectorizer.pkl", "rb"))
+ps = PorterStemmer()
+
 
 def transform_text(text):
-    text  = text.lower()
-    text  = ''.join(c for c in text if c not in string.punctuation)
+    text = text.lower()
+    text = "".join(c for c in text if c not in string.punctuation)
     words = [ps.stem(w) for w in text.split() if w not in ENGLISH_STOP_WORDS]
     return " ".join(words)
+
 
 # ── App shell ────────────────────────────────────────────
 st.markdown('<div class="app-shell">', unsafe_allow_html=True)
@@ -500,28 +497,37 @@ st.markdown('<div class="app-shell">', unsafe_allow_html=True)
 # ── LEFT: header ────────────────────────────────────────
 st.markdown('<div class="col-left">', unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(
+    """
 <div class="hero-badge">
     <div class="badge-icon">🛡️</div>
     <span class="badge-text">AI-Powered Protection</span>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 st.markdown('<div class="eyebrow">Message Scanner</div>', unsafe_allow_html=True)
-st.markdown('<div class="headline">Detect <em>spam</em><br>instantly.</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="headline">Detect <em>spam</em><br>instantly.</div>',
+    unsafe_allow_html=True,
+)
 st.markdown(
     '<div class="tagline">Paste any SMS and our NLP model classifies it in milliseconds — with full confidence scoring and probability breakdown.</div>',
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
-st.markdown("""
+st.markdown(
+    """
 <div class="stat-row">
     <div class="stat-chip"><div class="chip-dot"></div><strong>98.3%</strong> accuracy</div>
     <div class="stat-chip"><div class="chip-dot"></div><strong>5.5K</strong> messages</div>
     <div class="stat-chip"><div class="chip-dot"></div><strong>&lt;50ms</strong> inference</div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ── RIGHT: input + result ───────────────────────────────
 st.markdown('<div class="col-right">', unsafe_allow_html=True)
@@ -542,34 +548,41 @@ btn_clicked = st.button("🔍  Analyze message")
 # ── Result ──────────────────────────────────────────────
 if btn_clicked:
     if not input_sms.strip():
-        st.markdown("""
+        st.markdown(
+            """
         <div class="warn-card">
             ⚠️  Please paste or type a message before analyzing.
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
     else:
         transformed = transform_text(input_sms)
-        vec         = vectorizer.transform([transformed])
-        prediction  = model.predict(vec)[0]
+        vec = vectorizer.transform([transformed])
+        prediction = model.predict(vec)[0]
 
         try:
-            probs     = model.predict_proba(vec)[0]
+            probs = model.predict_proba(vec)[0]
             spam_prob = probs[1]
-            ham_prob  = probs[0]
-            conf      = max(spam_prob, ham_prob)
+            ham_prob = probs[0]
+            conf = max(spam_prob, ham_prob)
         except Exception:
             spam_prob = 0.97 if prediction == 1 else 0.03
-            ham_prob  = 1 - spam_prob
-            conf      = max(spam_prob, ham_prob)
+            ham_prob = 1 - spam_prob
+            conf = max(spam_prob, ham_prob)
 
         conf_pct = round(conf * 100, 1)
-        fill_w   = f"{conf_pct}%"
+        fill_w = f"{conf_pct}%"
 
         st.markdown('<div class="result-wrap">', unsafe_allow_html=True)
-        st.markdown('<div class="section-label" style="margin-top:20px;">Result</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="section-label" style="margin-top:20px;">Result</div>',
+            unsafe_allow_html=True,
+        )
 
         if prediction == 1:
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <div class="result-spam">
                 <div class="result-header">
                     <div class="result-chip-spam">🚨</div>
@@ -594,9 +607,12 @@ if btn_clicked:
                     <span class="prob-val-safe">{ham_prob:.4f}</span>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
         else:
-            st.markdown(f"""
+            st.markdown(
+                f"""
             <div class="result-safe">
                 <div class="result-header">
                     <div class="result-chip-safe">✅</div>
@@ -621,16 +637,19 @@ if btn_clicked:
                     <span class="prob-val-spam">{spam_prob:.4f}</span>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ── Footer ──────────────────────────────────────────────
-st.markdown("""
+st.markdown(
+    """
 <div class="footer-area">
     <div class="section-label" style="margin-bottom:12px;">Powered by</div>
     <div class="pill-row">
@@ -641,4 +660,6 @@ st.markdown("""
         <div class="pill">🐍 Python 3</div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
