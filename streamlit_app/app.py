@@ -1,6 +1,7 @@
 import streamlit as st
 import pickle
 import string
+from pathlib import Path
 from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
@@ -476,8 +477,15 @@ BG_SVG = (
 st.markdown(BG_SVG, unsafe_allow_html=True)
 
 # ── Load model ──────────────────────────────────────────
-model      = pickle.load(open("models/spam_model.pkl", "rb"))
-vectorizer = pickle.load(open("models/vectorizer.pkl", "rb"))
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+model = pickle.load(
+    open(BASE_DIR / "models" / "spam_model.pkl", "rb")
+)
+
+vectorizer = pickle.load(
+    open(BASE_DIR / "models" / "vectorizer.pkl", "rb")
+)
 ps         = PorterStemmer()
 
 def transform_text(text):
